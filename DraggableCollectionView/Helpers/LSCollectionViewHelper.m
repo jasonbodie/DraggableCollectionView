@@ -59,6 +59,10 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc]
                                        initWithTarget:self
                                        action:@selector(handleLongPressGesture:)];
+        if([[self draggableDataSource] respondsToSelector:@selector(minimumPressDuration)])
+        {
+            _longPressGestureRecognizer.minimumPressDuration = [[self draggableDataSource] minimumPressDuration];
+        }
         [_collectionView addGestureRecognizer:_longPressGestureRecognizer];
         
         _panPressGestureRecognizer = [[UIPanGestureRecognizer alloc]
@@ -81,6 +85,11 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
 - (LSCollectionViewLayoutHelper *)layoutHelper
 {
     return [(id <UICollectionViewLayout_Warpable>)self.collectionView.collectionViewLayout layoutHelper];
+}
+
+-(id<UICollectionViewDataSource_Draggable>) draggableDataSource
+{
+    return (id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource;
 }
 
 - (void)layoutChanged
@@ -227,7 +236,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             if (indexPath == nil) {
                 return;
             }
-            if (![(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource
+            if (![[self draggableDataSource]
                   collectionView:self.collectionView
                   canMoveItemAtIndexPath:indexPath]) {
                 return;
@@ -241,14 +250,14 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
 
             if( ([self.collectionView.dataSource respondsToSelector:@selector(collectionView:alphaForDraggingItemAtIndexPath:)]))
             {
-                mockCell.alpha = [(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource collectionView: self.collectionView alphaForDraggingItemAtIndexPath: indexPath ];
+                mockCell.alpha = [[self draggableDataSource] collectionView: self.collectionView alphaForDraggingItemAtIndexPath: indexPath ];
             }
             mockCenter = mockCell.center;
             [self.collectionView addSubview:mockCell];
 			if ([self.collectionView.dataSource respondsToSelector:@selector(collectionView:transformForDraggingItemAtIndexPath:duration:)])
             {
 				NSTimeInterval duration = 0.3;
-				CGAffineTransform transform = [(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource collectionView:self.collectionView transformForDraggingItemAtIndexPath:indexPath duration:&duration];
+				CGAffineTransform transform = [[self draggableDataSource] collectionView:self.collectionView transformForDraggingItemAtIndexPath:indexPath duration:&duration];
 				[UIView animateWithDuration:duration animations:^{
 					mockCell.transform = transform;
 				} completion:nil];
@@ -270,7 +279,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             NSIndexPath *fromIndexPath = self.layoutHelper.fromIndexPath;
             NSIndexPath *toIndexPath = self.layoutHelper.toIndexPath;
             // Tell the data source to move the item
-            id<UICollectionViewDataSource_Draggable> dataSource = (id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource;
+            id<UICollectionViewDataSource_Draggable> dataSource = [self draggableDataSource];
             [dataSource collectionView:self.collectionView moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
 
             // Move the item
@@ -317,7 +326,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     lastIndexPath = indexPath;
     
     if ([self.collectionView.dataSource respondsToSelector:@selector(collectionView:canMoveItemAtIndexPath:toIndexPath:)] == YES
-        && [(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource
+        && [[self draggableDataSource]
             collectionView:self.collectionView
             canMoveItemAtIndexPath:self.layoutHelper.fromIndexPath
             toIndexPath:indexPath] == NO) {
@@ -335,7 +344,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
         // Move mock to match finger
         fingerTranslation = [sender translationInView:self.collectionView];
 		if (_hasShouldAlterTranslationDelegateMethod) {
-			[(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource collectionView:self.collectionView alterTranslation:&fingerTranslation];
+			[[self draggableDataSource] collectionView:self.collectionView alterTranslation:&fingerTranslation];
 		}
         mockCell.center = _CGPointAdd(mockCenter, fingerTranslation);
         
