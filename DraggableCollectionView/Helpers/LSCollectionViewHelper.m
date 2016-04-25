@@ -59,6 +59,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc]
                                        initWithTarget:self
                                        action:@selector(handleLongPressGesture:)];
+        _longPressGestureRecognizer.delegate = self;
         if([[self draggableDataSource] respondsToSelector:@selector(minimumPressDuration)])
         {
             _longPressGestureRecognizer.minimumPressDuration = [[self draggableDataSource] minimumPressDuration];
