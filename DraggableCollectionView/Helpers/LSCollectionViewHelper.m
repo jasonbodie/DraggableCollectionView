@@ -338,6 +338,21 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     } completion:nil];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if([[self draggableDataSource] respondsToSelector:@selector(collectionView:gestureRecognizer:shouldReceiveTouch:)])
+    {
+        return [[self draggableDataSource] collectionView: self.collectionView
+                                        gestureRecognizer: gestureRecognizer
+                                       shouldReceiveTouch: touch ];
+    }
+    else
+    {
+        return YES;
+    }
+
+}
+
 - (void)handlePanGesture:(UIPanGestureRecognizer *)sender
 {
     if(sender.state == UIGestureRecognizerStateChanged) {

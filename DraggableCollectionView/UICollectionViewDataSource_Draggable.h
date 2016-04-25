@@ -22,4 +22,5 @@
 - (CGFloat)collectionView:(UICollectionView *)collectionView alphaForDraggingItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)collectionView:(UICollectionView *)collectionView didMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath;
 - (CFTimeInterval) minimumPressDuration;
+- (BOOL)collectionView:(UICollectionView *)collectionView gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch;
 @end
