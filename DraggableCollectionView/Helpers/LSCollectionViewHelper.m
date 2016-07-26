@@ -321,7 +321,8 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
 
 - (void)warpToIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath == nil || [lastIndexPath isEqual:indexPath]) {
+    if(indexPath == nil || indexPath.row == NSNotFound || [lastIndexPath isEqual:indexPath]) 
+    {
         return;
     }
     lastIndexPath = indexPath;
