@@ -71,13 +71,13 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
         _panPressGestureRecognizer.delegate = self;
         [_collectionView addGestureRecognizer:_panPressGestureRecognizer];
 
-# iOS 10 comment out to support drag and drop        
-#        for (UIGestureRecognizer *gestureRecognizer in _collectionView.gestureRecognizers) {
-#            if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-#                [gestureRecognizer requireGestureRecognizerToFail:_longPressGestureRecognizer];
-#                break;
-#            }
-#        }
+// iOS 10 comment out to support drag and drop        
+//        for (UIGestureRecognizer *gestureRecognizer in _collectionView.gestureRecognizers) {
+//            if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+//                [gestureRecognizer requireGestureRecognizerToFail:_longPressGestureRecognizer];
+//                break;
+//            }
+//        }
         
         [self layoutChanged];
     }
